@@ -1,66 +1,72 @@
 {
-  "name": "my-lib",
-  "type": "module",
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "test": "jest",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "prepack": "json -f package.json -I -e \"delete this.devDependencies; delete this.dependencies\"",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/my-lib.umd.js",
-  "module": "./dist/my-lib.es.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/my-lib.es.js",
-      "require": "./dist/my-lib.umd.js"
+    "name": "my-lib",
+    "type": "module",
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "test": "jest",
+        "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+        "preview": "vite preview",
+        "prepack": "json -f package.json -I -e \"delete this.devDependencies; delete this.dependencies\"",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
+    },
+    "files": [
+        "dist"
+    ],
+    "main": "./dist/my-lib.umd.js",
+    "module": "./dist/my-lib.es.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/my-lib.es.js",
+            "require": "./dist/my-lib.umd.js"
+        }
+    },
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "styled-components": "^6.0.0-rc.3"
+    },
+    "devDependencies": {
+        "@storybook/addon-essentials": "^7.0.18",
+        "@storybook/addon-interactions": "^7.0.18",
+        "@storybook/addon-links": "^7.0.18",
+        "@storybook/blocks": "^7.0.18",
+        "@storybook/react": "^7.0.18",
+        "@storybook/react-vite": "^7.0.18",
+        "@storybook/testing-library": "^0.0.14-next.2",
+        "@testing-library/jest-dom": "^5.16.5",
+        "@testing-library/react": "^14.0.0",
+        "@types/jest": "^29.5.2",
+        "@types/node": "^20.2.5",
+        "@types/react": "^18.0.37",
+        "@types/react-dom": "^18.0.11",
+        "@typescript-eslint/eslint-plugin": "^5.59.0",
+        "@typescript-eslint/parser": "^5.59.0",
+        "@vitejs/plugin-react": "^4.0.0",
+        "eslint": "^8.38.0",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-plugin-react-refresh": "^0.3.4",
+        "eslint-plugin-storybook": "^0.6.12",
+        "identity-obj-proxy": "^3.0.0",
+        "jest": "^29.5.0",
+        "jest-environment-jsdom": "^29.5.0",
+        "jest-svg-transformer": "^1.0.0",
+        "json": "^11.0.0",
+        "prop-types": "^15.8.1",
+        "storybook": "^7.0.18",
+        "ts-jest": "^29.1.0",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.2",
+        "vite": "^4.3.9",
+        "vite-plugin-dts": "^2.3.0"
+    },
+    "license": "UNLICENSED",
+    "peerDependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "styled-components": "^6.0.0-rc.3"
     }
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "styled-components": "^6.0.0-rc.3"
-  },
-  "devDependencies": {
-    "@storybook/addon-essentials": "^7.0.18",
-    "@storybook/addon-interactions": "^7.0.18",
-    "@storybook/addon-links": "^7.0.18",
-    "@storybook/blocks": "^7.0.18",
-    "@storybook/react": "^7.0.18",
-    "@storybook/react-vite": "^7.0.18",
-    "@storybook/testing-library": "^0.0.14-next.2",
-    "@types/jest": "^29.5.2",
-    "@types/node": "^20.2.5",
-    "@types/react": "^18.0.37",
-    "@types/react-dom": "^18.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.0",
-    "@vitejs/plugin-react": "^4.0.0",
-    "eslint": "^8.38.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.3.4",
-    "eslint-plugin-storybook": "^0.6.12",
-    "jest": "^29.5.0",
-    "json": "^11.0.0",
-    "prop-types": "^15.8.1",
-    "storybook": "^7.0.18",
-    "ts-jest": "^29.1.0",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.9",
-    "vite-plugin-dts": "^2.3.0"
-  },
-  "license": "UNLICENSED",
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "styled-components": "^6.0.0-rc.3"
-  }
 }

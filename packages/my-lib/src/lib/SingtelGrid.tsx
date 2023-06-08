@@ -23,8 +23,7 @@ export interface SingtelGridProps {
     columnDefs: ColumnDef[];
     rowData: RowData[];
     showHeader?: boolean;
-    // primary key of data to uniquely identify a row of data, for ex id
-    primaryKey?: string
+    getUniqRowId?: (data: RowData) => string;
     rowSelection?: 'single' | 'multiple';
 }
 
@@ -33,10 +32,11 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
     rowData,
     showHeader = true,
     rowSelection,
+    getUniqRowId = (data: RowData) => JSON.stringify(data),
 }) => {
     const [sortColumn, setSortColumn] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
+    const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
     const [isMobileView, setIsMobileView] = useState<boolean>(false);
     const [isHeaderMultiselect, setIsHeaderMultiselect] = useState<boolean>(false);
@@ -71,15 +71,15 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
         }
     };
 
-    const handleRowSelection = (rowIndex: number) => {
+    const handleRowSelection = (rowId: string) => {
         if (rowSelection === 'single') {
-            setSelectedRows([rowIndex]);
+            setSelectedRows([rowId]);
         } else if (rowSelection === 'multiple') {
             const selectedRowSet = new Set(selectedRows);
-            if (selectedRowSet.has(rowIndex)) {
-                selectedRowSet.delete(rowIndex);
+            if (selectedRowSet.has(rowId)) {
+                selectedRowSet.delete(rowId);
             } else {
-                selectedRowSet.add(rowIndex);
+                selectedRowSet.add(rowId);
             }
             setSelectedRows(Array.from(selectedRowSet));
         }
@@ -88,11 +88,15 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
     const handleHeaderRowSelection = (checked: boolean) => {
         setIsHeaderMultiselect(checked);
         if (checked) {
-            setSelectedRows([]);
+            const selectedRowSet = new Set(selectedRows);
+            sortedData.map((row) => {
+                const rowId = getUniqRowId(row); 
+                selectedRowSet.add(rowId);
+            })
+            setSelectedRows(Array.from(selectedRowSet));
         } else {
             setSelectedRows([]);
         }
-        // setSelectedRows(Array.from(sortedData.filter(x => x.)));
     }
 
     const handleRowSelectionHeader = () => {
@@ -111,8 +115,8 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
         </div>
     };
 
-    const isRowSelected = (rowIndex: number) => {
-        return selectedRows.includes(rowIndex);
+    const isRowSelected = (rowId: string) => {
+        return selectedRows.includes(rowId);
     };
 
     const renderHeaderCell = (columnDef: ColumnDef) => {
@@ -139,8 +143,8 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
         );
     };
 
-    const renderRowSelectionCell = (rowIndex: number) => {
-        const isSelected = isRowSelected(rowIndex);
+    const renderRowSelectionCell = (rowId: string) => {
+        const isSelected = isRowSelected(rowId);
         const selectionBgColor = isSelected ? '#EFEDFD' : '';
 
         return (
@@ -151,39 +155,41 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
                 {rowSelection === 'single' && (
                     <SingtelRadioButton
                         checked={isSelected}
-                        onChange={() => handleRowSelection(rowIndex)}
+                        onChange={() => handleRowSelection(rowId)}
                     />
                 )}
                 {rowSelection === 'multiple' && (
                     <SingtelCheckBox
                         checked={isSelected}
-                        onChange={() => handleRowSelection(rowIndex)}
+                        onChange={() => handleRowSelection(rowId)}
                     />
                 )}
             </div>
         );
     };
 
-    const renderRow = (row: RowData, rowIndex: number) => {
-        const isSelected = isRowSelected(rowIndex);
+    const renderRow = (row: RowData) => {
+        const rowId = getUniqRowId(row); 
+        const isSelected = isRowSelected(rowId);
         const selectionBgColor = isSelected ? '#EFEDFD' : '';
 
         return (
             <div
-                key={rowIndex}
+                key={rowId}
                 className="singtel-grid-row"
                 style={{ backgroundColor: selectionBgColor }}
             >
-                {rowSelection && renderRowSelectionCell(rowIndex)}
+                {rowSelection && renderRowSelectionCell(rowId)}
                 {isMobileView && <div className='singtel-grid-cell-mobile'>
                     {columnDefs.map((columnDef, columnIndex) => (
                         <div key={columnIndex} style={{ display: 'flex', }}>
                             <div className={`singtel-grid-cell-mobile-header`}>{columnDef.headerName} : </div>
                             <div className={`singtel-grid-cell-mobile-text`} >{row[columnDef.property]}</div>
                         </div>
-                    ))}</div>}
+                    ))}</div>
+                }
                 {!isMobileView && columnDefs.map((columnDef, columnIndex) => (
-                    <React.Fragment key={columnIndex}>
+                    <div key={columnIndex}>
                         <div
                             className={`singtel-grid-cell ${columnDef.align ? columnDef.align : 'leftAligned'
                                 }`}
@@ -194,7 +200,7 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
                         {columnIndex < columnDefs.length - 1 && (
                             <div className="singtel-grid-row-divider" />
                         )}
-                    </React.Fragment>
+                    </div>
                 ))}
             </div>
         );
@@ -228,7 +234,7 @@ const SingtelGrid: React.FC<SingtelGridProps> = ({
                 </div>
             )}
             <div className="singtel-grid-body">
-                {sortedData.map((row, rowIndex) => renderRow(row, rowIndex))}
+                {sortedData.map((row) => renderRow(row))}
             </div>
         </div>
     );
