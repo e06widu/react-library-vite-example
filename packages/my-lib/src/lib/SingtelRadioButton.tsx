@@ -14,7 +14,7 @@ const SingtelRadioButton: React.FC<SingtelRadioButtonProps> = ({ checked, onChan
     <div className="singtel-radio-button" onClick={onChange}>
       <img
         src={checked ? radioChecked : radioNotChecked}
-        alt="Radio Icon"
+        alt={checked ? 'Checked' : 'Not Checked'}
         className="singtel-radio-icon"
       />
     </div>

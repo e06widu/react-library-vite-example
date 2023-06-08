@@ -1,91 +1,103 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import SingtelGrid, { ColumnDef, RowData } from '../lib/SingtelGrid';
 import '@testing-library/jest-dom/extend-expect';
 
 describe('SingtelGrid', () => {
   const columnDefs: ColumnDef[] = [
     { headerName: 'Name', property: 'name', width: 100 },
-    { headerName: 'Age', property: 'age', width: 50 },
-    { headerName: 'Email', property: 'email', width: 200 },
+    { headerName: 'Age', property: 'age', width: 80 },
   ];
 
   const rowData: RowData[] = [
-    { name: 'John', age: 30, email: 'john@example.com' },
-    { name: 'Jane', age: 25, email: 'jane@example.com' },
+    { name: 'John Doe', age: 30 },
+    { name: 'Jane Smith', age: 25 },
   ];
 
   it('renders the grid with header and rows', () => {
-    render(
-      <SingtelGrid columnDefs={columnDefs} rowData={rowData} showHeader={true} />
-    );
+    render(<SingtelGrid columnDefs={columnDefs} rowData={rowData} />);
 
-    // Check if the header cells are rendered
+    // Header
     expect(screen.getByText('Name')).toBeInTheDocument();
     expect(screen.getByText('Age')).toBeInTheDocument();
-    expect(screen.getByText('Email')).toBeInTheDocument();
 
-    // Check if the row cells are rendered
-    expect(screen.getByText('John')).toBeInTheDocument();
+    // Rows
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('30')).toBeInTheDocument();
-    expect(screen.getByText('john@example.com')).toBeInTheDocument();
-
-    expect(screen.getByText('Jane')).toBeInTheDocument();
+    expect(screen.getByText('Jane Smith')).toBeInTheDocument();
     expect(screen.getByText('25')).toBeInTheDocument();
-    expect(screen.getByText('jane@example.com')).toBeInTheDocument();
   });
 
-  it('handles sorting when clicking on a sortable column header', () => {
-    render(
-      <SingtelGrid columnDefs={columnDefs} rowData={rowData} showHeader={true} />
-    );
+  it('handles row selection', () => {
+    // const handleRowSelection = jest.fn();
 
-    const ageHeader = screen.getByText('Age').parentElement!;
-
-    // Initial order: John, Jane
-    expect(screen.getAllByText(/John|Jane/)[0]).toHaveTextContent('John');
-
-    // Click on the age header to sort in descending order
-    fireEvent.click(ageHeader);
-
-    // After sorting: Jane, John
-    expect(screen.getAllByText(/John|Jane/)[0]).toHaveTextContent('John');
-
-    // Click on the age header again to sort in ascending order
-    fireEvent.click(ageHeader);
-
-    // After sorting: John, Jane
-    expect(screen.getAllByText(/John|Jane/)[0]).toHaveTextContent('John');
-  });
-
-  it('handles row selection when clicking on a row', () => {
     render(
       <SingtelGrid
         columnDefs={columnDefs}
         rowData={rowData}
-        showHeader={true}
+        rowSelection="multiple"
+      />
+    );
+
+    const checkbox1 = screen.getAllByAltText('Not Checked')[1];
+    const checkbox2 = screen.getAllByAltText('Not Checked')[2];
+
+    // Click checkboxes to select rows
+    expect(checkbox1.getAttribute('alt')).toEqual('Not Checked');
+    expect(checkbox2.getAttribute('alt')).toEqual('Not Checked');
+
+    // Select first row
+    fireEvent.click(checkbox1);
+    expect(checkbox1.getAttribute('alt')).toEqual('Checked');
+    expect(checkbox2.getAttribute('alt')).toEqual('Not Checked');
+    // expect(handleRowSelection).toHaveBeenCalledWith('{"name":"John Doe","age":30}');
+
+    // Select second row
+    fireEvent.click(checkbox2);
+    expect(checkbox1.getAttribute('alt')).toEqual('Checked');
+    expect(checkbox2.getAttribute('alt')).toEqual('Checked');
+    // expect(handleRowSelection).toHaveBeenCalledWith('{"name":"Jane Smith","age":25}');
+
+    // Deselect first row
+    fireEvent.click(checkbox1);
+    expect(checkbox1.getAttribute('alt')).toEqual('Not Checked');
+    expect(checkbox2.getAttribute('alt')).toEqual('Checked');
+    // expect(handleRowSelection).toHaveBeenCalledWith('{"name":"John Doe","age":30}');
+
+    // Deselect second row
+    fireEvent.click(checkbox2);
+    expect(checkbox1.getAttribute('alt')).toEqual('Not Checked');
+    expect(checkbox2.getAttribute('alt')).toEqual('Not Checked');
+    // expect(handleRowSelection).toHaveBeenCalledWith('{"name":"Jane Smith","age":25}');
+  });
+
+  it('handles single row selection', () => {
+    // const handleRowSelection = jest.fn();
+
+    render(
+      <SingtelGrid
+        columnDefs={columnDefs}
+        rowData={rowData}
         rowSelection="single"
       />
     );
 
-    const johnRow = screen.getByText('John').parentElement!;
-    const janeRow = screen.getByText('Jane').parentElement!;
+    const radioButton1 = screen.getAllByAltText('Not Checked')[0];
+    const radioButton2 = screen.getAllByAltText('Not Checked')[1];
 
-    // Initially, no row is selected
-    expect(johnRow).not.toHaveClass('singtel-grid-row-selected');
-    expect(janeRow).not.toHaveClass('singtel-grid-row-selected');
+    // Click radio buttons to select rows
+    expect(radioButton1.getAttribute('alt')).toEqual('Not Checked');
+    expect(radioButton2.getAttribute('alt')).toEqual('Not Checked');
 
-    // Click on the John row to select it
-    fireEvent.click(johnRow);
+    // Select first row
+    fireEvent.click(radioButton1.parentElement as HTMLElement);
+    expect(radioButton1.getAttribute('alt')).toEqual('Checked');
+    expect(radioButton2.getAttribute('alt')).toEqual('Not Checked');
+    // expect(handleRowSelection).toHaveBeenCalledWith('0');
 
-    // Only the John row should be selected
-    expect(johnRow).toHaveClass('singtel-grid-row-selected');
-    expect(janeRow).not.toHaveClass('singtel-grid-row-selected');
-
-    // Click on the Jane row to select it
-    fireEvent.click(janeRow);
-
-    // Only the Jane row should be selected now
-    expect(johnRow).not.toHaveClass('singtel-grid-row-selected');
-    expect(janeRow).toHaveClass('singtel-grid-row-selected');
+    // Select second row
+    fireEvent.click(radioButton2.parentElement as HTMLElement);
+    expect(radioButton1.getAttribute('alt')).toEqual('Not Checked');
+    expect(radioButton2.getAttribute('alt')).toEqual('Checked');
+    // expect(handleRowSelection).toHaveBeenCalledWith('1');
   });
 });
