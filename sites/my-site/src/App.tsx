@@ -1,28 +1,35 @@
-import { SingtelTbl } from 'my-lib';
+import { SingtelGrid, ColumnDef, RowData } from 'my-lib';
 
 function App() {
   const onClick = () => {
     console.log('Clicked')
   }
-  const tableData = [
-    { header1: "Value 1", header2: "Value 2", header3: "Value 3" },
-    { header1: "Value 4", header2: "Value 5", header3: "Value 6" },
-    { header1: "Value 7", header2: "Value 8", header3: "Value 9" },
-    { header1: "Value 10", header2: "Value 11", header3: "Value 12" },
-    { header1: "Value 13", header2: "Value 14", header3: "Value 15" },
-    { header1: "Value 16", header2: "Value 17", header3: "Value 18" },
-    { header1: "Value 19", header2: "Value 20", header3: "Value 21" },
-    { header1: "Value 22", header2: "Value 23", header3: "Value 24" },
-    { header1: "Value 25", header2: "Value 26", header3: "Value 27" },
-    { header1: "Value 28", header2: "Value 29", header3: "Value 30" },
+  const columnDefs: ColumnDef[] = [
+    { headerName: 'Name', property: 'name', width: 150, isSort: true },
+    { headerName: 'Age', property: 'age', width: 100, isSort: true },
+    { headerName: 'City', property: 'city', width: 200, isSort: true },
+    { headerName: 'Address', property: 'address', width: 200, isSort: true },
+    { headerName: 'Income', property: 'income', width: 150, align: 'rightAligned', isSort: false },
   ];
+
+  const rowData: RowData[] = [
+    { name: 'A John Doe', age: 25, city: 'New York', address: 'Sample address 12345',  income: 50000 },
+    { name: 'C Jane Smith', age: 30, city: 'San Francisco', address: 'Sample address 12345', income: 70000 },
+    { name: 'B Mike Johnson', age: 35, city: 'London', address: 'Sample address 12345', income: 60000 },
+    { name: 'E John Doe', age: 25, city: 'New York', address: 'Sample address 12345',  income: 50000 },
+    { name: 'G Jane Smith', age: 30, city: 'San Francisco', address: 'Sample address 12345', income: 70000 },
+    { name: 'P Mike Johnson', age: 35, city: 'London', address: 'Sample address 12345', income: 60000 },
+  ];
+
 
 
   return (
     <>
       <div>
-        {/* <MyButton onClick={onClick}>Click here!</MyButton> */}
-        <SingtelTbl data={tableData} />;
+        <SingtelGrid  columnDefs={columnDefs}
+        rowData={rowData}
+        showHeader= {true}
+        rowSelection= {'multiple'} />;
       </div>
 
     </>

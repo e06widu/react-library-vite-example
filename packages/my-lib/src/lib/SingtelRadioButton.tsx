@@ -1,4 +1,5 @@
 import React from 'react';
+import './SingtelRadioButton.css';
 
 import radioNotChecked from '../assets/radioNotChecked.svg';
 import radioChecked from '../assets/radioChecked.svg';
